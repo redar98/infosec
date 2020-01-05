@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>SI 7 - Lab Work</title>
+
+    <link rel="stylesheet" th:href="@{private/css/main.css}"/>
+</head>
+
+<body>
+    <th:block th:include="partials/navbar :: navbar"></th:block>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-4 text-center wrapper pad-top">
+                <form th:action="@{/hosts}" class="hosts-form" method="post">
+                    <input type="text" name="domain" minlength="4" required="required" class="fadeIn first w-100" placeholder="www.google.com">
+                    <input type="submit" id="block-domain-btn" class="fadeIn first w-80" value="BLOCK">
+                </form>
+            </div>
+            <div class="col-8">
+                <div class="wrapper special-list fadeInDown">
+                    <ul class="custom-list-group">
+                        <h3 th:if="${#lists.isEmpty(hostsList)}">There are no blocked domains at the moment...</h3>
+                        <li class="list-group-item accounts-list-item" id="domain-blocked" th:each="host: ${hostsList}">
+                            <form th:action="@{/delete/host}" method="post">
+                                <label class="accounts-label" th:text="${host.domain}"></label>
+                                <input type="hidden" th:value="${host.domain}" name="domain">
+                                <button type="submit" class="btn btn-success account-delete-btn">Grant Access</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <th:block th:include="partials/footer :: footer"></th:block>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>SI 7 - Lab Work</title>
+
+    <link rel="stylesheet" th:href="@{private/css/main.css}"/>
+    <link rel="stylesheet" th:href="@{private/css/login.css}"/>
+</head>
+
+<body>
+    <th:block th:include="partials/navbar :: navbar"></th:block>
+
+    <div class="login-reg-panel">
+        <div class="login-info-box">
+            <h2>Have an account?</h2>
+            <p>Lorem ipsum dolor sit amet</p>
+            <label id="label-register" for="log-reg-show">Login</label>
+            <input type="radio" name="active-log-panel" id="log-reg-show"  checked="checked">
+        </div>
+
+        <div class="register-info-box">
+            <h2>Don't have an account?</h2>
+            <p>You can easily create your account in simple steps.</p>
+            <a id="label-login" th:href="@{/}">Register</a>
+            <input type="radio" name="active-log-panel" id="log-login-show">
+        </div>
+
+        <div class="white-panel">
+            <div class="login-show">
+                <h2>LOGIN</h2>
+                <form method="post" th:action="@{/login}" th:object="${account}">
+                    <input type="text" required="true" minlength="4" maxlength="20" placeholder="username" th:field="*{username}">
+                    <input type="password" required="true" minlength="6" placeholder="password" th:field="*{password}">
+                    <input type="submit" class="novisual" value="Login">
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:include="partials/footer :: footer"></th:block>
+    <script type="text/javascript" th:src="@{private/js/login.js}"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>SI 7 - Lab Work</title>
+
+    <link rel="stylesheet" th:href="@{private/css/main.css}"/>
+</head>
+
+<body>
+    <th:block th:include="partials/navbar :: navbar"></th:block>
+
+    <div class="wrapper special-list fadeInDown">
+        <ul class="accounts-list list-group">
+            <li class="list-group-item accounts-list-item" th:each="account: ${accountList}">
+                <form th:action="@{/delete}" method="post">
+                    <label class="accounts-label" th:text="${account.username.concat(': ' + account.password)}"></label>
+                    <input type="hidden" th:value="${account.username}" name="username">
+                    <button type="submit" class="btn btn-danger account-delete-btn">Send Away</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+
+    <th:block th:include="partials/footer :: footer"></th:block>
+</body>
+</html>

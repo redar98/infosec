@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>SI 7 - Lab Work</title>
+
+    <link rel="stylesheet" th:href="@{private/css/main.css}"/>
+</head>
+
+<body>
+    <th:block th:include="partials/navbar :: navbar"></th:block>
+
+    <div class="wrapper justify-center fadeInDown">
+        <div id="formContent">
+
+            <div class="fadeIn first">
+                <img th:src="@{/private/images/encryption.png}" id="icon" alt="Encryption Form" />
+            </div>
+
+            <form method="post" th:action="@{/}" th:object="${account}">
+                <input type="text" id="username" minlength="4" maxlength="20" required="true" class="fadeIn second" name="login" placeholder="username" th:field="*{username}">
+                <input type="password" id="password" minlength="6" required="true" class="fadeIn third" name="login" placeholder="password" th:field="*{password}">
+                <input type="submit" class="fadeIn fourth" value="Register">
+            </form>
+
+            <div id="formFooter">
+                <a class="underlineHover" th:href="@{/login}">Already have an account?</a>
+            </div>
+
+        </div>
+    </div>
+
+    <th:block th:include="partials/footer :: footer"></th:block>
+</body>
+</html>
