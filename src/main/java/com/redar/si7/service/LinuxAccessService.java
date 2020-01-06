@@ -14,6 +14,8 @@ public class LinuxAccessService implements DomainBlockerService {
     @Value("${iptables.file.path}")
     private String iptablesFilePath;
 
+    public static final String URL_ADDRESS_REGEX = "^(http:\\/\\/|https:\\/\\/)?(www.)?((\\w+)\\.\\w*)*.[a-z]{1,3}.?([a-z]+)?$";
+
     @Override
     public List<HostsAccess> getAllDomains() {
         try {

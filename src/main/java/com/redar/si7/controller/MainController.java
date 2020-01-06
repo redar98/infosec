@@ -5,7 +5,9 @@ import com.redar.si7.domain.HostsAccess;
 import com.redar.si7.domain.MessagePopup;
 import com.redar.si7.service.AccountManagementService;
 import com.redar.si7.service.DomainBlockerService;
+import com.redar.si7.service.LinuxAccessService;
 import com.redar.si7.service.WindowsAccessService;
+import com.redar.si7.utils.OSValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,7 +55,7 @@ public class MainController {
         if (success) {
             model.addAttribute("messagePopup", MessagePopup.success("You have just logged in '" + account.getUsername() + "'!"));
         } else {
-            model.addAttribute("messagePopup", MessagePopup.fail("You have not registered before! Account not found."));
+            model.addAttribute("messagePopup", MessagePopup.fail("You have not registered before!\nAccount not found."));
             model.addAttribute("account", new Account());
             return "login";
         }
@@ -80,10 +82,19 @@ public class MainController {
 
     @PostMapping("/websites")
     public String blockDomain(@RequestParam String domain, Model model) {
-        if (!domain.matches(WindowsAccessService.URL_ADDRESS_REGEX) && !domain.matches(WindowsAccessService.IP_ADDRESS_REGEX)) {
-            model.addAttribute("messagePopup", MessagePopup.from("What?$#", "Enter a valid website domain or IP address!"));
-            model.addAttribute("hostsList", domainBlockerService.getAllDomains());
-            return "websites";
+        if (OSValidator.isWindows()) {
+            if (!domain.matches(WindowsAccessService.URL_ADDRESS_REGEX) && !domain.matches(WindowsAccessService.IP_ADDRESS_REGEX)) {
+                model.addAttribute("messagePopup", MessagePopup.from("What?$#", "Enter a valid website domain or IP address!"));
+                model.addAttribute("hostsList", domainBlockerService.getAllDomains());
+                return "websites";
+            }
+        } else if (OSValidator.isUnix()) {
+            // TODO: change services to return responses... instead of doing this!
+            if (!domain.matches(LinuxAccessService.URL_ADDRESS_REGEX)) {
+                model.addAttribute("messagePopup", MessagePopup.from("What?$#", "Enter a valid website domain!\nIP Addresses on Unix systems are not allowed."));
+                model.addAttribute("hostsList", domainBlockerService.getAllDomains());
+                return "websites";
+            }
         }
 
         List<HostsAccess> blockedDomains = domainBlockerService.blockDomain(domain);
