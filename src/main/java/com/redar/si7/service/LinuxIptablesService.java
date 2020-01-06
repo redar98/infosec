@@ -50,6 +50,7 @@ public class LinuxIptablesService {
                     } else if (ipSections[2] == null && line.startsWith(":OUTPUT ACCEPT")) {
                         fileContents.append("-A OUTPUT -p tcp -m string --string \"").append(domain).append("\" --algo bm --to 65535 -j REJECT --reject-with icmp-port-unreachable\n");
                         ipSections[2] = lineNumber;
+                        ipSections[2] = lineNumber;
                     }
                 }
                 if (ipSections[2] != null && line.contains(" -m string --string \"")) {
@@ -74,7 +75,7 @@ public class LinuxIptablesService {
         } catch (IOException ignored) {
         }
 
-        new ProcessBuilder().command("bash", "iptables-restore < " + iptablesFilePath);
+        new ProcessBuilder().command("bash", "-c", "iptables-restore < " + iptablesFilePath);
 
         return blockedDomains;
     }
@@ -83,7 +84,7 @@ public class LinuxIptablesService {
         file.createNewFile();
         file.setWritable(true, false);
 
-        new ProcessBuilder().command("bash", "iptables-save > " + iptablesFilePath);
+        new ProcessBuilder().command("bash", "-c", "iptables-save > " + iptablesFilePath);
 //        Set<PosixFilePermission> perms = Files.readAttributes(file.toPath(), PosixFileAttributes.class).permissions();
 //        perms.add(PosixFilePermission.OTHERS_WRITE);
 //        Files.setPosixFilePermissions(file.toPath(), perms);
