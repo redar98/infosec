@@ -5,6 +5,7 @@ import com.redar.si7.domain.HostsAccess;
 import com.redar.si7.domain.MessagePopup;
 import com.redar.si7.service.AccountManagementService;
 import com.redar.si7.service.DomainBlockerService;
+import com.redar.si7.service.WindowsAccessService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -71,16 +72,16 @@ public class MainController {
     }
 
     @GetMapping("/websites")
-    public String getHosts(Model model) {
+    public String getDomains(Model model) {
         model.addAttribute("hostsList", domainBlockerService.getAllDomains());
 
         return "websites";
     }
 
     @PostMapping("/websites")
-    public String blockHosts(@RequestParam String domain, Model model) {
-        if (!domain.matches("^(http:\\/\\/|https:\\/\\/)?(www.)?((\\w+)\\.\\w*)*.[a-z]{1,3}.?([a-z]+)?$")) {
-            model.addAttribute("messagePopup", MessagePopup.from("What?$#", "Enter a valid website domain!"));
+    public String blockDomain(@RequestParam String domain, Model model) {
+        if (!domain.matches(WindowsAccessService.URL_ADDRESS_REGEX) && !domain.matches(WindowsAccessService.IP_ADDRESS_REGEX)) {
+            model.addAttribute("messagePopup", MessagePopup.from("What?$#", "Enter a valid website domain or IP address!"));
             model.addAttribute("hostsList", domainBlockerService.getAllDomains());
             return "websites";
         }
@@ -98,7 +99,7 @@ public class MainController {
     }
 
     @PostMapping("/delete/host")
-    public String deleteFromHosts(@RequestParam String domain, Model model) {
+    public String removeDomainRule(@RequestParam String domain, Model model) {
         domainBlockerService.removeRuleForDomain(domain);
         model.addAttribute("hostsList", domainBlockerService.getAllDomains());
 

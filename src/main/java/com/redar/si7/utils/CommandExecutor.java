@@ -9,18 +9,18 @@ public class CommandExecutor {
     public static String executeCommand(final String command) {
         ProcessBuilder processBuilder = new ProcessBuilder();
 
-        // -- Linux --
-
-        // Run a shell command
-        processBuilder.command("bash", "-c", command);
+        if (OSValidator.isUnix()) {
+            // Linux - Run a shell command
+            processBuilder.command("bash", "-c", command);
+        } else if (OSValidator.isWindows()) {
+            // Windows - Run a command
+            processBuilder.command("cmd.exe", "/c", command);
+        } else {
+            throw new IllegalArgumentException("Operating System '" + OSValidator.getOS() + "' is not supported by this application.");
+        }
 
         // Run a shell script
         //processBuilder.command("path/to/hello.sh");
-
-        // -- Windows --
-
-        // Run a command
-        //processBuilder.command("cmd.exe", "/c", "dir C:\\Users\\mkyong");
 
         // Run a bat file
         //processBuilder.command("C:\\Users\\mkyong\\hello.bat");
@@ -45,7 +45,7 @@ public class CommandExecutor {
                 System.out.println(output);
             }
 
-            return output.toString();
+            return output.toString().trim();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }

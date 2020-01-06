@@ -1,9 +1,6 @@
 package com.redar.si7.config;
 
-import com.redar.si7.service.AccountManagementService;
-import com.redar.si7.service.DomainBlockerService;
-import com.redar.si7.service.LinuxAccessService;
-import com.redar.si7.service.WindowsAccessService;
+import com.redar.si7.service.*;
 import com.redar.si7.utils.Encryptor;
 import com.redar.si7.utils.OSValidator;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,9 +27,9 @@ public class SystemServiceConfig {
     }
 
     @Bean
-    public DomainBlockerService domainBlockerService() {
+    public DomainBlockerService domainBlockerService(FirewallAccessService firewallAccessService) {
         if (OSValidator.isWindows()) {
-            return new WindowsAccessService();
+            return new WindowsAccessService(firewallAccessService);
         } else if (OSValidator.isUnix()) {
             return new LinuxAccessService();
         } else {
