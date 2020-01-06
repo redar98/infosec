@@ -2,6 +2,7 @@ package com.redar.si7.service;
 
 import com.redar.si7.domain.AccessModificator;
 import com.redar.si7.domain.HostsAccess;
+import com.redar.si7.utils.CommandExecutor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -75,7 +76,7 @@ public class LinuxIptablesService {
         } catch (IOException ignored) {
         }
 
-        new ProcessBuilder().command("bash", "-c", "iptables-restore < " + iptablesFilePath);
+        CommandExecutor.executeCommand("iptables-restore < " + iptablesFilePath);
 
         return blockedDomains;
     }
@@ -84,7 +85,7 @@ public class LinuxIptablesService {
         file.createNewFile();
         file.setWritable(true, false);
 
-        new ProcessBuilder().command("bash", "-c", "iptables-save > " + iptablesFilePath);
+        CommandExecutor.executeCommand("iptables-save > " + iptablesFilePath);
 //        Set<PosixFilePermission> perms = Files.readAttributes(file.toPath(), PosixFileAttributes.class).permissions();
 //        perms.add(PosixFilePermission.OTHERS_WRITE);
 //        Files.setPosixFilePermissions(file.toPath(), perms);
