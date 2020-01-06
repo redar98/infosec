@@ -5,7 +5,6 @@ import com.redar.si7.domain.MessagePopup;
 import com.redar.si7.utils.Encryptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -14,12 +13,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Component
 @RequiredArgsConstructor
 public class AccountManagementService {
-
-    @Value("${users.file.path}")
-    private String usersFilePath;
 
     @Value("${encryption.key}")
     private String encryptionKey;
@@ -31,6 +26,8 @@ public class AccountManagementService {
     private String charsetName;
 
     private final Encryptor encryptor;
+
+    private final String usersFilePath;
 
     public MessagePopup register(final Account account) {
         if (!account.getUsername().matches("\\w{4,20}")) {

@@ -37,10 +37,11 @@ public class CommandExecutor {
 
             int exitVal = process.waitFor();
             if (exitVal == 0) {
-                System.out.println("[!] Command '" + command + "' returned success! Output:");
-                System.out.println(output);
+                System.out.println("[!] Command '" + command + "' returned success!");
             } else {
-                System.out.println("[!] Command '" + command + "' returned failure! Output:");
+                System.out.println("[!] Command '" + command + "' returned failure!");
+            }
+            if (!output.toString().isEmpty()) {
                 System.out.println(output);
             }
 
