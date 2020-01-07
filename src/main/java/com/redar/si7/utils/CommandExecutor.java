@@ -3,6 +3,7 @@ package com.redar.si7.utils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDateTime;
 
 public class CommandExecutor {
 
@@ -37,12 +38,12 @@ public class CommandExecutor {
 
             int exitVal = process.waitFor();
             if (exitVal == 0) {
-                System.out.println("[!] Command '" + command + "' returned success!");
+                System.out.println(LocalDateTime.now() + "  INFO --- [  CommandExecutor] Command '" + command + "' returned success!");
             } else {
-                System.out.println("[!] Command '" + command + "' returned failure!");
+                System.out.println(LocalDateTime.now() + "  INFO --- [  CommandExecutor] Command '" + command + "' returned failure! (" + exitVal + ")");
             }
             if (!output.toString().isEmpty()) {
-                System.out.println(output);
+                System.out.println(output.toString().trim());
             }
 
             return output.toString().trim();

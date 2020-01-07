@@ -80,7 +80,7 @@ public class WindowsAccessService implements DomainBlockerService {
             return;
         }
 
-        final String searchRegex = ".*" + domain + "$";
+        final String searchRegex = "(.)*" + domain + "$";
         final StringBuilder updatedFile = new StringBuilder();
 
         try (FileReader fr = new FileReader(hostsFilePath)) {
@@ -96,7 +96,8 @@ public class WindowsAccessService implements DomainBlockerService {
 
             bw.write(updatedFile.substring(0, updatedFile.lastIndexOf("\n")));
             bw.flush();
-        } catch (IOException ignored) {
+        } catch (IOException ex) {
+            throw new NullPointerException("Access denied. Restart with elevated privileges!");
         }
     }
 
