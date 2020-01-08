@@ -33,7 +33,7 @@ public class AccountManagementService {
         if (!account.getUsername().matches("\\w{4,20}")) {
             return MessagePopup.from("Rules Violated", "Username length should be between 4 and 20 letters!\nWithout any special characters.");
         } else if (!canRegister(account)) {
-            return MessagePopup.from("Username Unavailable", "Username '" + account.getUsername() + "' is already being user by someone else!");
+            return MessagePopup.from("Username Unavailable", "Username '" + account.getUsername() + "' is already being used by someone else!");
         }
 
         final String encryptedText = convertToEncrypted(account);
@@ -48,11 +48,12 @@ public class AccountManagementService {
     }
 
     public boolean login(final Account account) {
-        final String encryptedAccount = convertToEncrypted(account);
+        final String separator = new String(new byte[]{(byte) (char) dataSeparator}, Charset.forName(charsetName));
+        final String combinedAccount = account.combineText(separator);
         try (FileReader fr = new FileReader(usersFilePath)) {
             BufferedReader br = new BufferedReader(fr);
 
-            Optional<String> foundAccount = br.lines().filter(encryptedAccount::equals).findAny();
+            Optional<String> foundAccount = br.lines().filter(a -> combinedAccount.equals(encryptor.decryptWithKey(a, encryptionKey))).findAny();
             if (foundAccount.isPresent()) {
                 return true;
             }

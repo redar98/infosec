@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.Charset;
-import java.util.stream.Stream;
+import java.util.Random;
 
 @Component
 public class Encryptor {
@@ -25,17 +25,19 @@ public class Encryptor {
         final String secondPass = convertToHex(firstPass);
         final String thirdPass = addRandomizer(secondPass, key, 1);
         final String fourthPass = addEncryptionKey(thirdPass, key, false);
+        final String fifthPass = addRandomNumber(fourthPass, false);
 
-        return fourthPass;
+        return fifthPass;
     }
 
     public String decryptWithKey(final String input, final String key) {
-        final String firstPass = addEncryptionKey(input, key, true);
-        final String secondPass = addRandomizer(firstPass, key, -1);
-        final String thirdPass = convertToLetters(secondPass);
-        final String fourthPass = shiftTimes(thirdPass, encryptionShifting * -1);
+        final String firstPass = addRandomNumber(input, true);
+        final String secondPass = addEncryptionKey(firstPass, key, true);
+        final String thirdPass = addRandomizer(secondPass, key, -1);
+        final String fourthPass = convertToLetters(thirdPass);
+        final String fifthPass = shiftTimes(fourthPass, encryptionShifting * -1);
 
-        return fourthPass;
+        return fifthPass;
     }
 
     private String shiftTimes(String input, final int times) {
@@ -76,10 +78,11 @@ public class Encryptor {
         final StringBuilder randomizedInput = new StringBuilder();
         int keySum = key.codePoints().sum();
         keySum = (keySum % (Integer.parseInt(String.valueOf(keySum).substring(0, 1)) * (int) Math.pow(10, (String.valueOf(keySum).length() - 1)))) + key.codePointAt(0);
+        final int characterNumber = input.length() / 2;
 
         for (int i = 0; i < input.length(); i += 2) {
             final String hex = input.substring(i, i + 2);
-            String randomizedChar = Integer.toHexString((byte) (Integer.parseInt(hex, 16) + ((internalRandomizer + i * 2 + keySum) * multiplier)));
+            String randomizedChar = Integer.toHexString((byte) (Integer.parseInt(hex, 16) + ((internalRandomizer + i * 2 + keySum + characterNumber) * multiplier)));
             randomizedChar = doubleHex(randomizedChar.replace("ff", ""));
 
             randomizedInput.append(randomizedChar);
@@ -110,6 +113,33 @@ public class Encryptor {
             }
         }
         return newInput.toString();
+    }
+
+    private String addRandomNumber(final String input, boolean reverse) {
+        final StringBuilder newString = new StringBuilder();
+        final int rnd;
+        if (reverse) {
+            rnd = Integer.parseInt(input.substring(0, 2), 16);
+        } else {
+            int highestNumber = 0;
+
+            for (int i = 0; i < input.length(); i += 2) {
+                final int currNumber = Integer.parseInt(input.substring(i, i + 2), 16);
+                if (currNumber > highestNumber){
+                    highestNumber = currNumber;
+                }
+            }
+
+            rnd = new Random().nextInt(256 - highestNumber);
+            newString.append(doubleHex(Integer.toHexString(rnd)));
+        }
+
+        final int startIndex = reverse ? 2: 0;
+        for (int i = startIndex; i < input.length(); i += 2) {
+            final String newHex = Integer.toHexString(Integer.parseInt(input.substring(i, i + 2), 16) + (reverse? -rnd: rnd));
+            newString.append(doubleHex(newHex));
+        }
+        return newString.toString();
     }
 
     private static String doubleHex(final String fullHex) {
